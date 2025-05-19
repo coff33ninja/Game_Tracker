@@ -1,0 +1,16 @@
+aiohttp
+beautifulsoup4
+pydantic
+playwright
+transformers
+datasets
+torch
+scikit-learn
+ttkbootstrap
+Pillow
+plyer
+apscheduler
+boto3
+pygame
+tkinterweb # For embedding web browser in Tkinter, if used
+huggingface_hub # For interacting with the Hugging Face Hub, including HfFileSystem

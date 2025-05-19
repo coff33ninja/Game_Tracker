@@ -1,6 +1,7 @@
 # gui.py
 import tkinter as tk
-from ttkbootstrap import Style, Window, Notebook, Button, Label, Entry, Frame
+from tkinter import simpledialog, messagebox # Added simpledialog and messagebox
+from ttkbootstrap import Style, Notebook, Button, Label, Entry, Frame # Removed Window
 import ttkbootstrap as ttk
 import sqlite3
 import asyncio
@@ -62,8 +63,9 @@ class FreeGamesGUI:
         try:
             img = Image.open("gamepad.png").resize((20, 20))
             self.gamepad_icon = ImageTk.PhotoImage(img)
-        except:
-            self.gamepad_icon = None
+        except Exception: # Catch generic exception for file not found, PIL not installed, etc.
+            # Create a 1x1 transparent PhotoImage as a fallback
+            self.gamepad_icon = ImageTk.PhotoImage(Image.new('RGBA', (1, 1), (0,0,0,0)))
 
         # Main frame
         self.main_frame = Frame(root)
@@ -78,7 +80,7 @@ class FreeGamesGUI:
         ).pack(pady=10)
 
         # Tabs
-        self.notebook = Notebook(self.main_frame, bootstyle="primary")
+        self.notebook = Notebook(self.main_frame, bootstyle="primary") # type: ignore
         self.active_tab = tk.Frame(self.notebook)
         self.claimed_tab = tk.Frame(self.notebook)
         self.expired_tab = tk.Frame(self.notebook)
@@ -119,7 +121,7 @@ class FreeGamesGUI:
         Label(self.active_filter_frame, text="Search:", foreground="#FFFFFF").grid(
             row=0, column=0
         )
-        self.active_search = Entry(self.active_filter_frame, bootstyle="info")
+        self.active_search = Entry(self.active_filter_frame, bootstyle="info")  # type: ignore
         self.active_search.grid(row=0, column=1, padx=5)
         Label(self.active_filter_frame, text="Platform:", foreground="#FFFFFF").grid(
             row=0, column=2
@@ -127,7 +129,7 @@ class FreeGamesGUI:
         self.active_platform = ttk.Combobox(
             self.active_filter_frame,
             values=["All", "Epic", "Amazon Prime", "GOG", "Steam", "Ubisoft"],
-            bootstyle="info",
+            bootstyle="info", # type: ignore
         )
         self.active_platform.grid(row=0, column=3, padx=5)
         self.active_platform.set("All")
@@ -137,7 +139,7 @@ class FreeGamesGUI:
         self.active_genre = ttk.Combobox(
             self.active_filter_frame,
             values=["All", "RPG", "FPS", "Adventure", "Strategy"],
-            bootstyle="info",
+            bootstyle="info",  # type: ignore
         )
         self.active_genre.grid(row=0, column=5, padx=5)
         self.active_genre.set("All")
@@ -145,7 +147,7 @@ class FreeGamesGUI:
             self.active_filter_frame,
             text="Filter",
             command=self.update_active_gui,
-            bootstyle="info-outline",
+            bootstyle="info-outline",  # type: ignore
         ).grid(row=0, column=6, padx=5)
 
         # Claimed Games Table
@@ -207,7 +209,7 @@ class FreeGamesGUI:
             font=("Orbitron", 14),
             foreground="#FFD700",
         ).grid(row=1, column=0, columnspan=5, pady=5)
-        self.owned_form_frame = Frame(self.owned_tab, bootstyle="dark")
+        self.owned_form_frame = Frame(self.owned_tab, bootstyle="dark")  # type: ignore
         self.owned_form_frame.grid(row=2, column=0, columnspan=5, pady=10)
         Label(
             self.owned_form_frame,
@@ -218,7 +220,7 @@ class FreeGamesGUI:
         Label(self.owned_form_frame, text="Title:", foreground="#FFFFFF").grid(
             row=1, column=0, sticky="e"
         )
-        self.title_entry = Entry(self.owned_form_frame, bootstyle="info")
+        self.title_entry = Entry(self.owned_form_frame, bootstyle="info")  # type: ignore
         self.title_entry.grid(row=1, column=1, padx=5)
         Label(self.owned_form_frame, text="Platform:", foreground="#FFFFFF").grid(
             row=2, column=0, sticky="e"
@@ -226,25 +228,25 @@ class FreeGamesGUI:
         self.platform_entry = ttk.Combobox(
             self.owned_form_frame,
             values=["Epic", "Amazon Prime", "GOG", "Steam", "Ubisoft"],
-            bootstyle="info",
+            bootstyle="info",  # type: ignore
         )
         self.platform_entry.grid(row=2, column=1, padx=5)
         Label(self.owned_form_frame, text="URL (optional):", foreground="#FFFFFF").grid(
             row=3, column=0, sticky="e"
         )
-        self.url_entry = Entry(self.owned_form_frame, bootstyle="info")
+        self.url_entry = Entry(self.owned_form_frame, bootstyle="info")  # type: ignore
         self.url_entry.grid(row=3, column=1, padx=5)
         Button(
             self.owned_form_frame,
             text="Add to Collection",
             command=self.add_owned_game,
-            bootstyle="success-outline",
+            bootstyle="success-outline",  # type: ignore
         ).grid(row=4, column=0, columnspan=2, pady=5)
         Button(
             self.owned_form_frame,
             text="Import Steam Library",
             command=self.import_steam_library,
-            bootstyle="warning-outline",
+            bootstyle="warning-outline",  # type: ignore
         ).grid(row=5, column=0, columnspan=2, pady=5)
 
         # Recommendations Table
@@ -277,28 +279,28 @@ class FreeGamesGUI:
         # Chart.js integration handled via main.py
 
         # Control Buttons
-        self.control_frame = Frame(self.main_frame, bootstyle="dark")
+        self.control_frame = Frame(self.main_frame, bootstyle="dark")  # type: ignore
         self.control_frame.pack(pady=10)
         Button(
             self.control_frame,
             text="Refresh Arcade",
-            command=self.on_refresh_arcade_button_click, # Changed command
-            bootstyle="danger",
+            command=self.on_refresh_arcade_button_click,  # Changed command
+            bootstyle="danger",  # type: ignore
         ).grid(row=0, column=0, padx=5)
 
         Button(
             self.control_frame,
             text="Export to CSV",
             command=lambda: self.export_backup.export_to_csv(),
-            bootstyle="info-outline",
+            bootstyle="info-outline", # type: ignore
         ).grid(row=0, column=1, padx=5)
 
         if self.cloud_sync: # Check if cloud_sync object exists
             Button(
                 self.control_frame,
                 text="Sync to Cloud",
-                command=self.cloud_sync.upload_db, # This is now safe
-                bootstyle="warning-outline",
+                command=self.cloud_sync.upload_db,  # This is now safe
+                bootstyle="warning-outline",  # type: ignore
             ).grid(row=0, column=2, padx=5)
 
         # Status Bar
@@ -384,10 +386,10 @@ class FreeGamesGUI:
             self.update_status()
 
     def import_steam_library(self):
-        steam_id = tk.simpledialog.askstring(
+        steam_id = simpledialog.askstring(
             "Steam ID", "Enter your Steam ID:", parent=self.root
         )
-        api_key = tk.simpledialog.askstring(
+        api_key = simpledialog.askstring(
             "API Key", "Enter your Steam API Key:", parent=self.root
         )
         if steam_id and api_key:
@@ -425,8 +427,13 @@ class FreeGamesGUI:
                 "SELECT url, price, genre FROM games WHERE title = ? AND platform = ?",
                 (title, platform),
             )
-            url, price, genre = cursor.fetchone()
+            # Explicitly type hint the expected return from fetchone for this query
+            fetched_active_details: tuple[str | None, float | None, str | None] | None = cursor.fetchone()
             conn.close()
+            if fetched_active_details:
+                url, price, genre = fetched_active_details
+            else:
+                url, price, genre = None, None, None # Should ideally not happen if game is from filtered list
             Label(
                 self.active_tab,
                 text=platform,
@@ -440,13 +447,13 @@ class FreeGamesGUI:
                 self.active_tab,
                 text="Claim",
                 command=lambda u=url: self.claim_game(u),
-                bootstyle="info-outline",
+                bootstyle="info-outline",  # type: ignore
             ).grid(row=row_idx, column=2, padx=5)
             Button(
                 self.active_tab,
                 text="Mark Owned",
                 command=lambda t=title, p=platform, u=url: self.mark_owned(t, p, u),
-                bootstyle="warning-outline",
+                bootstyle="warning-outline",  # type: ignore
             ).grid(row=row_idx, column=3, padx=5)
             Label(
                 self.active_tab,
@@ -500,8 +507,12 @@ class FreeGamesGUI:
                 "SELECT price, genre FROM games WHERE title = ? AND platform = ?",
                 (title, platform),
             )
-            price, genre = cursor.fetchone()
+            # Explicitly type hint the expected return from fetchone for this query (price, genre)
+            fetched_details: tuple[float | None, str | None] | None = cursor.fetchone()
             conn.close()
+            # Unpack the fetched details, handling the case where no row was found
+            price, genre = fetched_details if fetched_details else (None, None)
+
             Label(
                 self.claimed_tab,
                 text=platform,
@@ -543,8 +554,13 @@ class FreeGamesGUI:
                 "SELECT price, genre FROM games WHERE title = ? AND platform = ?",
                 (title, platform),
             )
-            price, genre = cursor.fetchone()
+            # Explicitly type hint the expected return from fetchone for this query
+            fetched_expired_details: tuple[float | None, str | None] | None = cursor.fetchone()
             conn.close()
+            if fetched_expired_details:
+                price, genre = fetched_expired_details
+            else:
+                price, genre = None, None
             Label(
                 self.expired_tab,
                 text=platform,
@@ -586,8 +602,13 @@ class FreeGamesGUI:
                 "SELECT price, genre FROM games WHERE title = ? AND platform = ?",
                 (title, platform),
             )
-            price, genre = cursor.fetchone()
+            # Explicitly type hint the expected return from fetchone for this query
+            fetched_owned_details: tuple[float | None, str | None] | None = cursor.fetchone()
             conn.close()
+            if fetched_owned_details:
+                price, genre = fetched_owned_details
+            else:
+                price, genre = None, None
             Label(
                 self.owned_tab,
                 image=self.gamepad_icon,
@@ -638,7 +659,7 @@ class FreeGamesGUI:
                 self.recommend_tab,
                 text="Visit",
                 command=lambda u=url: webbrowser.open(u),
-                bootstyle="info-outline",
+                bootstyle="info-outline", # type: ignore
             ).grid(row=row_idx, column=2, padx=5)
             Label(
                 self.recommend_tab,
@@ -648,7 +669,7 @@ class FreeGamesGUI:
             ).grid(row=row_idx, column=3, padx=5, sticky="w")
 
         # Stats (Chart.js placeholder)
-        chart = self.analytics.get_platform_chart()
+        # chart = self.analytics.get_platform_chart() # This variable was assigned but not used.
         Label(
             self.stats_tab,
             text="Platform Distribution",
@@ -659,11 +680,11 @@ class FreeGamesGUI:
 
     def claim_game(self, url):
         webbrowser.open(url)
-        if tk.messagebox.askyesno(
+        if messagebox.askyesno(
             "Claimed?", "Did you claim this game?", parent=self.root
         ):
             self.db.mark_game_claimed(url)
-            if tk.messagebox.askyesno(
+            if messagebox.askyesno(
                 "Owned?", "Is this game now in your library?", parent=self.root
             ):
                 conn = sqlite3.connect(self.db.db_path)
@@ -671,9 +692,15 @@ class FreeGamesGUI:
                 cursor.execute(
                     "SELECT title, platform, url FROM games WHERE url = ?", (url,)
                 )
-                title, platform, url = cursor.fetchone()
-                self.owned_games.add_owned_game(title, platform, url)
+                # Explicitly type hint the expected return from fetchone for this query
+                fetched_claim_details: tuple[str | None, str | None, str | None] | None = cursor.fetchone()
                 conn.close()
+                if fetched_claim_details:
+                    title_claimed, platform_claimed, url_claimed = fetched_claim_details
+                    self.owned_games.add_owned_game(title_claimed, platform_claimed, url_claimed)
+                else:
+                    # Handle case where game is not found by URL after claiming, though unlikely
+                    print(f"Warning: Could not find game by URL {url} after claiming.")
             self.update_gui()
             self.update_status()
 

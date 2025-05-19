@@ -1,5 +1,57 @@
 [
     {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "argparse",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "argparse",
+        "description": "argparse",
+        "detail": "argparse",
+        "documentation": {}
+    },
+    {
+        "label": "pformat",
+        "importPath": "pprint",
+        "description": "pprint",
+        "isExtraImport": true,
+        "detail": "pprint",
+        "documentation": {}
+    },
+    {
+        "label": "jmespath",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "jmespath",
+        "description": "jmespath",
+        "detail": "jmespath",
+        "documentation": {}
+    },
+    {
+        "label": "exceptions",
+        "importPath": "jmespath",
+        "description": "jmespath",
+        "isExtraImport": true,
+        "detail": "jmespath",
+        "documentation": {}
+    },
+    {
         "label": "http.client",
         "kind": 6,
         "isExtraImport": true,
@@ -73,15 +125,6 @@
         "importPath": "os",
         "description": "os",
         "detail": "os",
-        "documentation": {}
-    },
-    {
-        "label": "json",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "json",
-        "description": "json",
-        "detail": "json",
         "documentation": {}
     },
     {
@@ -395,6 +438,30 @@
         "documentation": {}
     },
     {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "asyncio",
         "kind": 6,
         "isExtraImport": true,
@@ -470,6 +537,22 @@
         "documentation": {}
     },
     {
+        "label": "simpledialog",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
         "label": "ttk",
         "importPath": "tkinter",
         "description": "tkinter",
@@ -496,14 +579,6 @@
     },
     {
         "label": "Style",
-        "importPath": "ttkbootstrap",
-        "description": "ttkbootstrap",
-        "isExtraImport": true,
-        "detail": "ttkbootstrap",
-        "documentation": {}
-    },
-    {
-        "label": "Window",
         "importPath": "ttkbootstrap",
         "description": "ttkbootstrap",
         "isExtraImport": true,
@@ -914,23 +989,6 @@
         "documentation": {}
     },
     {
-        "label": "smtplib",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "smtplib",
-        "description": "smtplib",
-        "detail": "smtplib",
-        "documentation": {}
-    },
-    {
-        "label": "MIMEText",
-        "importPath": "email.mime.text",
-        "description": "email.mime.text",
-        "isExtraImport": true,
-        "detail": "email.mime.text",
-        "documentation": {}
-    },
-    {
         "label": "BaseModel",
         "importPath": "pydantic",
         "description": "pydantic",
@@ -944,6 +1002,15 @@
         "description": "collections",
         "isExtraImport": true,
         "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": ".venv.Scripts.jp",
+        "description": ".venv.Scripts.jp",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('expression')\n    parser.add_argument('-f', '--filename',\n                        help=('The filename containing the input data.  '\n                              'If a filename is not given then data is '\n                              'read from stdin.'))\n    parser.add_argument('--ast', action='store_true',\n                        help=('Pretty print the AST, do not search the data.'))\n    args = parser.parse_args()",
+        "detail": ".venv.Scripts.jp",
         "documentation": {}
     },
     {
@@ -1311,7 +1378,7 @@
         "kind": 6,
         "importPath": "game_filter",
         "description": "game_filter",
-        "peekOfCode": "class GameFilter:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    def filter_games(self, status, platform=None, genre=None, search_term=None):\n        query = f\"SELECT platform, title, {'end_date' if status == 'active' else 'claim_date' if status == 'claimed' else 'epitaph' if status == 'expired' else 'acquisition_date'} FROM games WHERE status = ?\"\n        params = [status]\n        if platform:\n            query += \" AND platform = ?\"\n            params.append(platform)\n        if genre:",
+        "peekOfCode": "class GameFilter:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    def filter_games(self, status: str, platform: Optional[str] = None, genre: Optional[str] = None, search_term: Optional[str] = None) -> List[Tuple[Optional[str], Optional[str], Optional[str]]]:\n        query = f\"SELECT platform, title, {'end_date' if status == 'active' else 'claim_date' if status == 'claimed' else 'epitaph' if status == 'expired' else 'acquisition_date'} FROM games WHERE status = ?\"\n        params = [status]\n        if platform:\n            query += \" AND platform = ?\"\n            params.append(platform)\n        if genre:",
         "detail": "game_filter",
         "documentation": {}
     },
@@ -1374,7 +1441,7 @@
         "kind": 6,
         "importPath": "notifications",
         "description": "notifications",
-        "peekOfCode": "class Notifications:\n    def __init__(self, db_manager: DBManager, email_config=None):\n        self.db = db_manager\n        self.email_config = (\n            email_config  # {\"smtp_server\", \"port\", \"sender\", \"password\", \"receiver\"}\n        )\n    def send_desktop_notification(self, title, message):\n        notification.notify(\n            title=title, message=message, app_name=\"Free Games Arcade\", timeout=10\n        )",
+        "peekOfCode": "class Notifications:\n    def __init__(self, db_manager: DBManager, email_config=None):\n        self.db = db_manager\n        # email_config is no longer used\n    def send_desktop_notification(self, title, message):\n        # Windows notification message limit for szTip is 256 WCHARs.\n        # Truncate if longer to prevent ValueError, leaving space for ellipsis.\n        max_len = 250  # Be a bit conservative\n        if len(message) > max_len:\n            message = message[:max_len] + \"...\"",
         "detail": "notifications",
         "documentation": {}
     },

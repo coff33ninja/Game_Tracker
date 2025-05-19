@@ -1,6 +1,7 @@
 # export_backup.py
 import csv
 import json
+import sqlite3
 from db_manager import DBManager
 
 

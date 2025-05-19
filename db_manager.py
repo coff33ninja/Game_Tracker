@@ -87,16 +87,16 @@ class DBManager:
 
                 if game_end_date_obj < now_utc:
                     # Game has expired
-                epitaph = random.choice([
-                    "Game Over: Unclaimed!",
-                    "Pixel Dust in the Wind...",
-                    "Lost in the Digital Abyss.",
-                    "No Respawn for This One!"
-                ])
-                cursor.execute(
-                    "UPDATE games SET status = 'expired', epitaph = ? WHERE id = ?",
-                    (epitaph, game_id)
-                )
+                    epitaph = random.choice([
+                        "Game Over: Unclaimed!",
+                        "Pixel Dust in the Wind...",
+                        "Lost in the Digital Abyss.",
+                        "No Respawn for This One!"
+                    ])
+                    cursor.execute(
+                        "UPDATE games SET status = 'expired', epitaph = ? WHERE id = ?",
+                        (epitaph, game_id)
+                    )
             except ValueError:
                 print(f"Warning: Could not parse end_date string '{end_date_str}' for game ID {game_id}. Skipping expiration check for this game.")
         conn.commit()
@@ -105,20 +105,23 @@ class DBManager:
     def get_games_by_status(self, status):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        if status == "active":
-            cursor.execute("SELECT platform, title, url, end_date FROM games WHERE status = ?", (status,))
-            return [(p, t, u, e) for p, t, u, e in cursor.fetchall()]
-        elif status == "claimed":
-            cursor.execute("SELECT platform, title, claim_date FROM games WHERE status = ?", (status,))
-            return [(p, t, c) for p, t, c in cursor.fetchall()]
-        elif status == "expired":
-            cursor.execute("SELECT platform, title, epitaph FROM games WHERE status = ?", (status,))
-            return [(p, t, e) for p, t, e in cursor.fetchall()]
-        elif status == "owned":
-            cursor.execute("SELECT platform, title, acquisition_date FROM games WHERE status = ?", (status,))
-            return [(p, t, a) for p, t, a in cursor.fetchall()]
-        conn.close()
-        return []
+        results = []
+        try:
+            if status == "active":
+                cursor.execute("SELECT platform, title, url, end_date FROM games WHERE status = ?", (status,))
+                results = [(p, t, u, e) for p, t, u, e in cursor.fetchall()]
+            elif status == "claimed":
+                cursor.execute("SELECT platform, title, claim_date FROM games WHERE status = ?", (status,))
+                results = [(p, t, c) for p, t, c in cursor.fetchall()]
+            elif status == "expired":
+                cursor.execute("SELECT platform, title, epitaph FROM games WHERE status = ?", (status,))
+                results = [(p, t, e) for p, t, e in cursor.fetchall()]
+            elif status == "owned":
+                cursor.execute("SELECT platform, title, acquisition_date FROM games WHERE status = ?", (status,))
+                results = [(p, t, a) for p, t, a in cursor.fetchall()]
+        finally:
+            conn.close()
+        return results
 
     def get_status_counts(self):
         conn = sqlite3.connect(self.db_path)

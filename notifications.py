@@ -1,7 +1,6 @@
 # notifications.py
+import sqlite3
 from plyer import notification
-import smtplib
-from email.mime.text import MIMEText
 from db_manager import DBManager
 from datetime import datetime, timedelta, timezone # Added datetime, timedelta, timezone
 
@@ -9,34 +8,23 @@ from datetime import datetime, timedelta, timezone # Added datetime, timedelta, 
 class Notifications:
     def __init__(self, db_manager: DBManager, email_config=None):
         self.db = db_manager
-        self.email_config = (
-            email_config  # {"smtp_server", "port", "sender", "password", "receiver"}
-        )
+        # email_config is no longer used
 
     def send_desktop_notification(self, title, message):
+        # Windows notification message limit for szTip is 256 WCHARs.
+        # Truncate if longer to prevent ValueError, leaving space for ellipsis.
+        max_len = 250  # Be a bit conservative
+        if len(message) > max_len:
+            message = message[:max_len] + "..."
         notification.notify(
             title=title, message=message, app_name="Free Games Arcade", timeout=10
         )
-
-    def send_email_notification(self, subject, body):
-        if not self.email_config:
-            return
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = self.email_config["sender"]
-        msg["To"] = self.email_config["receiver"]
-        with smtplib.SMTP_SSL(
-            self.email_config["smtp_server"], self.email_config["port"]
-        ) as server:
-            server.login(self.email_config["sender"], self.email_config["password"])
-            server.send_message(msg)
 
     def notify_new_games(self):
         games = self.db.get_games_by_status("active")
         if games:
             message = "\n".join(f"{g[1]} on {g[0]}: {g[2]}" for g in games)
             self.send_desktop_notification("New Free Games", message)
-            self.send_email_notification("New Free Games Available", message)
 
     def notify_expiring_games(self):
         conn = sqlite3.connect(self.db.db_path)
@@ -64,4 +52,3 @@ class Notifications:
         if expiring_games_details:
             message = "\n".join(f"{t} on {p} expires soon: {e}" for p, t, e in expiring_games_details)
             self.send_desktop_notification("Expiring Free Games", message)
-            self.send_email_notification("Free Games Expiring Soon", message)

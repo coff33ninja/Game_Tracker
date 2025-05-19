@@ -1,6 +1,4 @@
 # main.py
-import os
-import tkinter as tk
 from ttkbootstrap import Window
 import threading
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -43,16 +41,7 @@ if __name__ == "__main__":
     scraper = GameScraper(ai_module=ai)
     owned_games = OwnedGames(db)
     game_filter = GameFilter(db)
-    notifications = Notifications(
-        db,
-        email_config={
-            "smtp_server": "smtp.gmail.com",
-            "port": 465,
-            "sender": "your_email@gmail.com",
-            "password": "your_app_password",
-            "receiver": "your_email@gmail.com",
-        },
-    )
+    notifications = Notifications(db) # Email config removed
     library_import = LibraryImport(db)
     price_tracker = PriceTracker(db)
     ai_recommendations = AIRecommendations(ai, db)

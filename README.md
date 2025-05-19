@@ -69,28 +69,7 @@ Here's a breakdown of the key files in this project:
     ```
 
 3.  **Install dependencies:**
-    You will need to install several Python libraries. Create a `requirements.txt` file with the following content:
-    ```txt
-    aiohttp
-    beautifulsoup4
-    pydantic
-    playwright
-    transformers
-    datasets
-    torch
-    scikit-learn
-    ttkbootstrap
-    Pillow
-    plyer
-    apscheduler
-    boto3
-    # For labeling_tool.py and stats_chart.py
-    pygame
-    # tkinterweb is not a standard PyPI package, ensure it's correctly installed if used by HtmlFrame
-    # If tkinterweb is from a specific source, add installation instructions here.
-    # For now, assuming it's available or part of ttkbootstrap/tkinter.
-    ```
-    Then install them:
+    Install the required Python libraries using the `requirements.txt` file:
     ```bash
     pip install -r requirements.txt
     ```
@@ -98,6 +77,9 @@ Here's a breakdown of the key files in this project:
     ```bash
     python -m playwright install
     playwright install
+    ```
+    *Note: The `requirements.txt` file includes `pygame` (for `labeling_tool.py` and `stats_chart.py`). The `tkinterweb` library, if used by `HtmlFrame`, is not a standard PyPI package. If it's from a specific source or bundled, ensure it's correctly handled or add specific installation instructions for it if necessary.*
+
     ```
 
 4.  **Configuration (Optional but Recommended):**
