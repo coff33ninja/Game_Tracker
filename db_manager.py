@@ -118,7 +118,9 @@ class DBManager:
                 results = [(p, t, e) for p, t, e in cursor.fetchall()]
             elif status == "owned":
                 cursor.execute("SELECT platform, title, acquisition_date FROM games WHERE status = ?", (status,))
-                results = [(p, t, a) for p, t, a in cursor.fetchall()]
+                # Fetch claim_date as well to determine if an owned game was originally claimed
+                cursor.execute("SELECT platform, title, acquisition_date, claim_date FROM games WHERE status = ?", (status,))
+                results = [(p, t, a, c) for p, t, a, c in cursor.fetchall()]
         finally:
             conn.close()
         return results

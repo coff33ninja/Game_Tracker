@@ -1362,7 +1362,7 @@
         "kind": 6,
         "importPath": "game_filter",
         "description": "game_filter",
-        "peekOfCode": "class GameFilter:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    def filter_games(self, status: str, platform: Optional[str] = None, genre: Optional[str] = None, search_term: Optional[str] = None) -> List[Tuple[Optional[str], Optional[str], Optional[str]]]:\n        query = f\"SELECT platform, title, {'end_date' if status == 'active' else 'claim_date' if status == 'claimed' else 'epitaph' if status == 'expired' else 'acquisition_date'} FROM games WHERE status = ?\"\n        params = [status]\n        if platform:\n            query += \" AND platform = ?\"\n            params.append(platform)\n        if genre:",
+        "peekOfCode": "class GameFilter:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    def filter_games(self, status: str, platform: Optional[str] = None, genre: Optional[str] = None, search_term: Optional[str] = None) -> List[Tuple[Optional[str], Optional[str], Optional[str]]]:\n        # Determine the correct date/detail column based on status\n        detail_column = 'end_date' # Default for active\n        if status == 'claimed':\n            detail_column = 'claim_date'\n        elif status == 'expired':\n            detail_column = 'epitaph'",
         "detail": "game_filter",
         "documentation": {}
     },
@@ -1416,7 +1416,7 @@
         "kind": 6,
         "importPath": "multi_language",
         "description": "multi_language",
-        "peekOfCode": "class MultiLanguage:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    async def scrape_non_english(self, url, platform, locale=\"de\"):\n        async with aiohttp.ClientSession() as session:\n            async with session.get(url, headers={\"Accept-Language\": locale}) as resp:\n                if resp.status != 200:\n                    print(f\"Failed to fetch non-English page {url}, status: {resp.status}\")\n                    return\n                html = await resp.text()",
+        "peekOfCode": "class MultiLanguage:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    async def scrape_non_english(self, url, platform, locale=\"de\"):\n        headers = {\n            \"Accept-Language\": locale,\n            \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\"\n        }\n        async with aiohttp.ClientSession() as session:\n            async with session.get(url, headers=headers) as resp:",
         "detail": "multi_language",
         "documentation": {}
     },

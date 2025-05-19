@@ -35,7 +35,7 @@ class FreeGamesGUI:
         price_tracker: PriceTracker,
         ai_recommendations: AIRecommendations,
         export_backup: ExportBackup,
-        cloud_sync: CloudSync,
+        cloud_sync: CloudSync | None, # Allow CloudSync to be None
         genre_tagging: GenreTagging,
         multi_language: MultiLanguage,
         analytics: Analytics,
@@ -191,7 +191,7 @@ class FreeGamesGUI:
         ).grid(row=1, column=0, columnspan=5, pady=5)
 
         # Owned Games Table
-        self.owned_headers = ["Platform", "Title", "Acquisition Date", "Price", "Genre"]
+        self.owned_headers = ["Platform", "Title", "Acquisition Date", "Price", "Genre", "Origin"]
         self.owned_labels = [
             Label(
                 self.owned_tab,
@@ -208,9 +208,9 @@ class FreeGamesGUI:
             text="Your Epic Collection",
             font=("Orbitron", 14),
             foreground="#FFD700",
-        ).grid(row=1, column=0, columnspan=5, pady=5)
+        ).grid(row=1, column=0, columnspan=len(self.owned_headers), pady=5) # Adjusted columnspan
         self.owned_form_frame = Frame(self.owned_tab, bootstyle="dark")  # type: ignore
-        self.owned_form_frame.grid(row=2, column=0, columnspan=5, pady=10)
+        self.owned_form_frame.grid(row=2, column=0, columnspan=len(self.owned_headers), pady=10) # Adjusted columnspan
         Label(
             self.owned_form_frame,
             text="Add to Trophy Case",
@@ -593,8 +593,8 @@ class FreeGamesGUI:
             ).grid(row=row_idx, column=4, padx=5, sticky="w")
 
         # Owned Games
-        for row_idx, (platform, title, acquisition_date) in enumerate(
-            self.db.get_games_by_status("owned"), 3
+        for row_idx, (platform, title, acquisition_date, claim_date) in enumerate( # Added claim_date
+            self.db.get_games_by_status("owned"), 3 # Start row index from 3
         ):
             conn = sqlite3.connect(self.db.db_path)
             cursor = conn.cursor()
@@ -609,6 +609,9 @@ class FreeGamesGUI:
                 price, genre = fetched_owned_details
             else:
                 price, genre = None, None
+
+            origin_text = "Claimed Free" if claim_date else "Purchased"
+
             Label(
                 self.owned_tab,
                 image=self.gamepad_icon,
@@ -637,6 +640,12 @@ class FreeGamesGUI:
                 text=genre or "N/A",
                 font=("Orbitron", 10),
                 foreground="#00FF00",
+            ).grid(row=row_idx, column=4, padx=5, sticky="w")
+            Label(
+                self.owned_tab,
+                text=origin_text,
+                font=("Orbitron", 10),
+                foreground="#00FFFF", # Cyan color for origin text
             ).grid(row=row_idx, column=4, padx=5, sticky="w")
 
         # Recommendations

@@ -24,13 +24,20 @@ class GenreTagging:
         description_lower = description.lower()
 
         # Simple keyword matching for genres
-        if "rpg" in description_lower or "role-playing" in description_lower: found_genres.append("RPG")
-        if "shooter" in description_lower: found_genres.append("Shooter")
-        if "adventure" in description_lower: found_genres.append("Adventure")
-        if "strategy" in description_lower: found_genres.append("Strategy")
-        if "puzzle" in description_lower: found_genres.append("Puzzle")
-        if "action" in description_lower: found_genres.append("Action")
-        if "simulation" in description_lower: found_genres.append("Simulation")
+        if "rpg" in description_lower or "role-playing" in description_lower:
+            found_genres.append("RPG")
+        if "shooter" in description_lower:
+            found_genres.append("Shooter")
+        if "adventure" in description_lower:
+            found_genres.append("Adventure")
+        if "strategy" in description_lower:
+            found_genres.append("Strategy")
+        if "puzzle" in description_lower:
+            found_genres.append("Puzzle")
+        if "action" in description_lower:
+            found_genres.append("Action")
+        if "simulation" in description_lower:
+            found_genres.append("Simulation")
 
         genre_str = ",".join(list(set(found_genres))) # Use set to avoid duplicate genres
         if genre_str:

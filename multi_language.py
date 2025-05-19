@@ -9,10 +9,15 @@ class MultiLanguage:
         self.db = db_manager
 
     async def scrape_non_english(self, url, platform, locale="de"):
+        headers = {
+            "Accept-Language": locale,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers={"Accept-Language": locale}) as resp:
+            async with session.get(url, headers=headers) as resp:
                 if resp.status != 200:
-                    print(f"Failed to fetch non-English page {url}, status: {resp.status}")
+                    response_text_preview = await resp.text(errors='ignore')
+                    print(f"Failed to fetch non-English page {url} with locale {locale}, status: {resp.status}. Response: {response_text_preview[:200]}...")
                     return
 
                 html = await resp.text()
