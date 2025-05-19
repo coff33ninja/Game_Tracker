@@ -61,12 +61,12 @@
         "documentation": {}
     },
     {
-        "label": "requests",
+        "label": "urllib.parse",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "requests",
-        "description": "requests",
-        "detail": "requests",
+        "importPath": "urllib.parse",
+        "description": "urllib.parse",
+        "detail": "urllib.parse",
         "documentation": {}
     },
     {
@@ -76,6 +76,23 @@
         "importPath": "os",
         "description": "os",
         "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "scrapers",
+        "importPath": "game_scrapers",
+        "description": "game_scrapers",
+        "isExtraImport": true,
+        "detail": "game_scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
         "documentation": {}
     },
     {
@@ -1007,11 +1024,128 @@
         "documentation": {}
     },
     {
+        "label": "make_http_request",
+        "kind": 2,
+        "importPath": "game_scrapers.api_client",
+        "description": "game_scrapers.api_client",
+        "peekOfCode": "def make_http_request(api_name: str, endpoint_path: str, params: dict = None):\n    \"\"\"\n    Makes an HTTP GET request to a configured RapidAPI endpoint and returns parsed JSON data.\n    \"\"\"\n    if api_name not in API_ENDPOINTS:\n        print(f\"Error: API '{api_name}' not found in configuration.\")\n        return None\n    config = API_ENDPOINTS[api_name]\n    host = config[\"host\"]\n    api_key = API_KEYS[config[\"key_alias\"]]",
+        "detail": "game_scrapers.api_client",
+        "documentation": {}
+    },
+    {
+        "label": "run_all_scrapers",
+        "kind": 2,
+        "importPath": "game_scrapers.main",
+        "description": "game_scrapers.main",
+        "peekOfCode": "def run_all_scrapers():\n    print(\"Starting all scrapers...\\n\")\n    results = {}\n    all_successful = True\n    # --- Call scrapers for APIs that were working in tests ---\n    print(\"--- Processing reliably working APIs ---\")\n    results[\"epic_free\"] = scrapers.scrape_epic_games_store_free_games(country=\"US\")\n    results[\"f2p_database\"] = scrapers.scrape_free_to_play_games_database()\n    results[\"gamerpower\"] = scrapers.scrape_gamerpower(platform=\"epic-games-store.steam.android\", giveaway_type=\"game.loot\")\n    # Example: Scrape details for GTA V (AppID from steam-api7.py test)",
+        "detail": "game_scrapers.main",
+        "documentation": {}
+    },
+    {
+        "label": "CURRENT_DIR",
+        "kind": 5,
+        "importPath": "game_scrapers.main",
+        "description": "game_scrapers.main",
+        "peekOfCode": "CURRENT_DIR = os.path.dirname(os.path.abspath(__file__)) # .../game_scrapers\nPARENT_DIR = os.path.dirname(CURRENT_DIR) # .../Game_Tracker\nif PARENT_DIR not in sys.path:\n    sys.path.insert(0, PARENT_DIR)\n# Now, relative imports from the 'game_scrapers' package should work\nfrom game_scrapers import scrapers\ndef run_all_scrapers():\n    print(\"Starting all scrapers...\\n\")\n    results = {}\n    all_successful = True",
+        "detail": "game_scrapers.main",
+        "documentation": {}
+    },
+    {
+        "label": "PARENT_DIR",
+        "kind": 5,
+        "importPath": "game_scrapers.main",
+        "description": "game_scrapers.main",
+        "peekOfCode": "PARENT_DIR = os.path.dirname(CURRENT_DIR) # .../Game_Tracker\nif PARENT_DIR not in sys.path:\n    sys.path.insert(0, PARENT_DIR)\n# Now, relative imports from the 'game_scrapers' package should work\nfrom game_scrapers import scrapers\ndef run_all_scrapers():\n    print(\"Starting all scrapers...\\n\")\n    results = {}\n    all_successful = True\n    # --- Call scrapers for APIs that were working in tests ---",
+        "detail": "game_scrapers.main",
+        "documentation": {}
+    },
+    {
+        "label": "save_json_output",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def save_json_output(data, filename_base: str):\n    if data is None:\n        print(f\"No data to save for {filename_base} (data was None).\")\n        return False\n    output_path = os.path.join(OUTPUT_DIR, f\"{filename_base}_output.json\")\n    try:\n        with open(output_path, \"w\", encoding=\"utf-8\") as f:\n            json.dump(data, f, indent=4)\n        print(f\"Output saved to {output_path}\")\n        return True",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_epic_games_store_free_games",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_epic_games_store_free_games(country=\"US\"):\n    \"\"\"Scrapes free games from Epic Games Store.\"\"\"\n    print(\"\\n--- Scraping Epic Games Store Free Games ---\")\n    data = make_http_request(\n        api_name=\"epic_free_games\",\n        endpoint_path=\"/free\",\n        params={\"country\": country}\n    )\n    return save_json_output(data, \"epic_games_store_free_games\")\ndef scrape_free_to_play_games_database():",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_free_to_play_games_database",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_free_to_play_games_database():\n    \"\"\"Scrapes all games from Free-to-Play Games Database.\"\"\"\n    print(\"\\n--- Scraping Free-to-Play Games Database ---\")\n    data = make_http_request(\n        api_name=\"free_to_play_database\",\n        endpoint_path=\"/api/games\"\n    )\n    return save_json_output(data, \"free_to_play_games_database\")\ndef scrape_gamerpower(platform=\"epic-games-store.steam.android\", giveaway_type=\"game.loot\"):\n    \"\"\"Scrapes giveaways from GamerPower.\"\"\"",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_gamerpower",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_gamerpower(platform=\"epic-games-store.steam.android\", giveaway_type=\"game.loot\"):\n    \"\"\"Scrapes giveaways from GamerPower.\"\"\"\n    print(\"\\n--- Scraping GamerPower Giveaways ---\")\n    data = make_http_request(\n        api_name=\"gamerpower\",\n        endpoint_path=\"/api/filter\",\n        params={\"platform\": platform, \"type\": giveaway_type} # 'type' is a common param name\n    )\n    return save_json_output(data, \"gamerpower\")\ndef scrape_steam_api7_app_details(app_id=\"271590\", plain_text=\"true\", platform=\"all\", type_param=\"all\", lang=\"english\"):",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_steam_api7_app_details",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_steam_api7_app_details(app_id=\"271590\", plain_text=\"true\", platform=\"all\", type_param=\"all\", lang=\"english\"):\n    \"\"\"Scrapes app details from Steam API7.\"\"\"\n    print(f\"\\n--- Scraping Steam API7 App Details for AppID: {app_id} ---\")\n    data = make_http_request(\n        api_name=\"steam_api7_appdetails\",\n        endpoint_path=f\"/appDetails/requirements/{app_id}\",\n        params={\"plainText\": plain_text, \"platform\": platform, \"type\": type_param, \"lang\": lang}\n    )\n    return save_json_output(data, f\"steam_api7_appdetails_{app_id}\")\ndef scrape_steam_game_search_details(search_value=\"1547890\"):",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_steam_game_search_details",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_steam_game_search_details(search_value=\"1547890\"):\n    \"\"\"Scrapes game details from Steam Game Search and Details.\"\"\"\n    print(f\"\\n--- Scraping Steam Game Search and Details for: {search_value} ---\")\n    # Original test used: \"/game_details/search_like/game_id/?search_value=1547890%20\"\n    # The API seems to expect search_value as a query parameter.\n    # The path component \"game_id\" might be literal or a placeholder not used if search_value is primary.\n    # We'll use the path from the original test and provide search_value as a param.\n    # Adding a space to search_value as in the original test, urlencode will handle it.\n    data = make_http_request(\n        api_name=\"steam_game_search\",",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_free_epic_games_alternative",
+        "kind": 2,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "def scrape_free_epic_games_alternative():\n    \"\"\"\n    Attempts to scrape free games from an alternative Epic Games API (free-epic-games.p.rapidapi.com).\n    NOTE: This API had a 'not subscribed' error in tests. Uses 'requests' library.\n    \"\"\"\n    print(\"\\n--- Scraping Free Epic Games (Alternative API - Expects Subscription) ---\")\n    api_name = \"free_epic_games_alt\"\n    config = API_ENDPOINTS.get(api_name)\n    if not config:\n        print(f\"Error: API '{api_name}' not found in configuration.\")",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "CURRENT_SCRIPT_DIR",
+        "kind": 5,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "CURRENT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))\nOUTPUT_DIR = os.path.join(CURRENT_SCRIPT_DIR, \"..\", \"game_scrapers_outputs\")\nos.makedirs(OUTPUT_DIR, exist_ok=True)\ndef save_json_output(data, filename_base: str):\n    if data is None:\n        print(f\"No data to save for {filename_base} (data was None).\")\n        return False\n    output_path = os.path.join(OUTPUT_DIR, f\"{filename_base}_output.json\")\n    try:\n        with open(output_path, \"w\", encoding=\"utf-8\") as f:",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
+        "label": "OUTPUT_DIR",
+        "kind": 5,
+        "importPath": "game_scrapers.scrapers",
+        "description": "game_scrapers.scrapers",
+        "peekOfCode": "OUTPUT_DIR = os.path.join(CURRENT_SCRIPT_DIR, \"..\", \"game_scrapers_outputs\")\nos.makedirs(OUTPUT_DIR, exist_ok=True)\ndef save_json_output(data, filename_base: str):\n    if data is None:\n        print(f\"No data to save for {filename_base} (data was None).\")\n        return False\n    output_path = os.path.join(OUTPUT_DIR, f\"{filename_base}_output.json\")\n    try:\n        with open(output_path, \"w\", encoding=\"utf-8\") as f:\n            json.dump(data, f, indent=4)",
+        "detail": "game_scrapers.scrapers",
+        "documentation": {}
+    },
+    {
         "label": "conn",
         "kind": 5,
         "importPath": "Rapidapi-tests.all-games-search-db",
         "description": "Rapidapi-tests.all-games-search-db",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"all-games-search-db.p.rapidapi.com\")\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"all-games-search-db.p.rapidapi.com\", }\nconn.request( \"GET\", \"/search/suggest?l=english&use_store_query=1&use_search_spellcheck=1&search_creators_and_tags=1&realm=1&term=gta&cc=IN&excluded_content_descriptors=%5B%0A%20%203%2C%0A%20%204%0A%5D&f=games&v=28442543\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"all_games_search_db_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"all-games-search-db.p.rapidapi.com\")\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"all-games-search-db.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/search/suggest?l=english&use_store_query=1&use_search_spellcheck=1&search_creators_and_tags=1&realm=1&term=gta&cc=IN&excluded_content_descriptors=%5B%0A%20%203%2C%0A%20%204%0A%5D&f=games&v=28442543\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:",
         "detail": "Rapidapi-tests.all-games-search-db",
         "documentation": {}
     },
@@ -1020,7 +1154,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.all-games-search-db",
         "description": "Rapidapi-tests.all-games-search-db",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"all-games-search-db.p.rapidapi.com\", }\nconn.request( \"GET\", \"/search/suggest?l=english&use_store_query=1&use_search_spellcheck=1&search_creators_and_tags=1&realm=1&term=gta&cc=IN&excluded_content_descriptors=%5B%0A%20%203%2C%0A%20%204%0A%5D&f=games&v=28442543\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"all_games_search_db_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to all_games_search_db_output.json\")",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"all-games-search-db.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/search/suggest?l=english&use_store_query=1&use_search_spellcheck=1&search_creators_and_tags=1&realm=1&term=gta&cc=IN&excluded_content_descriptors=%5B%0A%20%203%2C%0A%20%204%0A%5D&f=games&v=28442543\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.all-games-search-db",
         "documentation": {}
     },
@@ -1038,7 +1172,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.all-games-search-db",
         "description": "Rapidapi-tests.all-games-search-db",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"all_games_search_db_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to all_games_search_db_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"all_games_search_db_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to all_games_search_db_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    # Print raw response, replacing characters that can't be easily displayed",
         "detail": "Rapidapi-tests.all-games-search-db",
         "documentation": {}
     },
@@ -1074,7 +1208,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.epic-games-store-free-games",
         "description": "Rapidapi-tests.epic-games-store-free-games",
-        "peekOfCode": "data = res.read()\n# Get the JSON data and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"epic_games_store_free_games_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to epic_games_store_free_games_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Get the JSON data and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"epic_games_store_free_games_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to epic_games_store_free_games_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.epic-games-store-free-games",
         "documentation": {}
     },
@@ -1083,7 +1217,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.epic-store-games",
         "description": "Rapidapi-tests.epic-store-games",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"epic-store-games.p.rapidapi.com\")\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"epic-store-games.p.rapidapi.com\", }\nconn.request( \"GET\", \"/comingSoon?searchWords=Assasin&categories=All&locale=us&country=us\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"epic-store-games.p.rapidapi.com\")\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"epic-store-games.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/comingSoon?searchWords=Assasin&categories=All&locale=us&country=us\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.epic-store-games",
         "documentation": {}
     },
@@ -1092,7 +1226,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.epic-store-games",
         "description": "Rapidapi-tests.epic-store-games",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"epic-store-games.p.rapidapi.com\", }\nconn.request( \"GET\", \"/comingSoon?searchWords=Assasin&categories=All&locale=us&country=us\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"epic-store-games.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/comingSoon?searchWords=Assasin&categories=All&locale=us&country=us\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\nprint(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.epic-store-games",
         "documentation": {}
     },
@@ -1173,7 +1307,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.free-to-play-games-database",
         "description": "Rapidapi-tests.free-to-play-games-database",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"free_to_play_games_database_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to free_to_play_games_database_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"free_to_play_games_database_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to free_to_play_games_database_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.free-to-play-games-database",
         "documentation": {}
     },
@@ -1209,7 +1343,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.gamerpower",
         "description": "Rapidapi-tests.gamerpower",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"gamerpower_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to gamerpower_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"gamerpower_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to gamerpower_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.gamerpower",
         "documentation": {}
     },
@@ -1227,7 +1361,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-api7",
         "description": "Rapidapi-tests.steam-api7",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"steam-api7.p.rapidapi.com\")\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"steam-api7.p.rapidapi.com\", }\nconn.request( \"GET\", \"/appDetails/requirements/271590?plainText=true&platform=all&type=all&lang=english\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_api7_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"steam-api7.p.rapidapi.com\")\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"steam-api7.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/appDetails/requirements/271590?plainText=true&platform=all&type=all&lang=english\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:",
         "detail": "Rapidapi-tests.steam-api7",
         "documentation": {}
     },
@@ -1236,7 +1370,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-api7",
         "description": "Rapidapi-tests.steam-api7",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"steam-api7.p.rapidapi.com\", }\nconn.request( \"GET\", \"/appDetails/requirements/271590?plainText=true&platform=all&type=all&lang=english\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_api7_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_api7_output.json\")",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"steam-api7.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/appDetails/requirements/271590?plainText=true&platform=all&type=all&lang=english\", headers=headers, )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.steam-api7",
         "documentation": {}
     },
@@ -1254,7 +1388,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-api7",
         "description": "Rapidapi-tests.steam-api7",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_api7_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_api7_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_api7_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_api7_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.steam-api7",
         "documentation": {}
     },
@@ -1263,7 +1397,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-game-search-and-details",
         "description": "Rapidapi-tests.steam-game-search-and-details",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"steam-game-search-and-details.p.rapidapi.com\")\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"steam-game-search-and-details.p.rapidapi.com\", }\nconn.request( \"GET\", \"/game_details/search_like/game_id/?search_value=1547890%20\", headers=headers )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_game_search_and_details_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"steam-game-search-and-details.p.rapidapi.com\")\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"steam-game-search-and-details.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/game_details/search_like/game_id/?search_value=1547890%20\", headers=headers )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:",
         "detail": "Rapidapi-tests.steam-game-search-and-details",
         "documentation": {}
     },
@@ -1272,7 +1406,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-game-search-and-details",
         "description": "Rapidapi-tests.steam-game-search-and-details",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"steam-game-search-and-details.p.rapidapi.com\", }\nconn.request( \"GET\", \"/game_details/search_like/game_id/?search_value=1547890%20\", headers=headers )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_game_search_and_details_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_game_search_and_details_output.json\")",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"steam-game-search-and-details.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/game_details/search_like/game_id/?search_value=1547890%20\", headers=headers )\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.steam-game-search-and-details",
         "documentation": {}
     },
@@ -1290,7 +1424,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.steam-game-search-and-details",
         "description": "Rapidapi-tests.steam-game-search-and-details",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_game_search_and_details_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_game_search_and_details_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"steam_game_search_and_details_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to steam_game_search_and_details_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.steam-game-search-and-details",
         "documentation": {}
     },
@@ -1299,7 +1433,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-news",
         "description": "Rapidapi-tests.video-game-news",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"video-game-news.p.rapidapi.com\") # Corrected hostname\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"video-game-news.p.rapidapi.com\", }\nconn.request(\"GET\", \"/all\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_news_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"video-game-news.p.rapidapi.com\") # Corrected hostname\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"video-game-news.p.rapidapi.com\",\n}\nconn.request(\"GET\", \"/all\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:",
         "detail": "Rapidapi-tests.video-game-news",
         "documentation": {}
     },
@@ -1308,7 +1442,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-news",
         "description": "Rapidapi-tests.video-game-news",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"video-game-news.p.rapidapi.com\", }\nconn.request(\"GET\", \"/all\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_news_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_news_output.json\")",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"video-game-news.p.rapidapi.com\",\n}\nconn.request(\"GET\", \"/all\", headers=headers)\nres = conn.getresponse()\ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.video-game-news",
         "documentation": {}
     },
@@ -1326,7 +1460,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-news",
         "description": "Rapidapi-tests.video-game-news",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_news_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_news_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_news_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_news_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\", errors=\"replace\"))",
         "detail": "Rapidapi-tests.video-game-news",
         "documentation": {}
     },
@@ -1335,7 +1469,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-price",
         "description": "Rapidapi-tests.video-game-price",
-        "peekOfCode": "conn = http.client.HTTPSConnection(\"video-game-price.p.rapidapi.com\") # Corrected hostname\nheaders = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"video-game-price.p.rapidapi.com\", }\nconn.request( \"GET\", \"/game?full_name=Super%20Mario%20Bros&name_contains=Mario&console_name=NES&region=NTSC\", headers=headers, )\nres = conn.getresponse() \ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_price_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)",
+        "peekOfCode": "conn = http.client.HTTPSConnection(\"video-game-price.p.rapidapi.com\") # Corrected hostname\nheaders = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"video-game-price.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/game?full_name=Super%20Mario%20Bros&name_contains=Mario&console_name=NES&region=NTSC\", headers=headers, )\nres = conn.getresponse() \ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:",
         "detail": "Rapidapi-tests.video-game-price",
         "documentation": {}
     },
@@ -1344,7 +1478,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-price",
         "description": "Rapidapi-tests.video-game-price",
-        "peekOfCode": "headers = { \"x-rapidapi-key\": \"24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9\", \"x-rapidapi-host\": \"video-game-price.p.rapidapi.com\", }\nconn.request( \"GET\", \"/game?full_name=Super%20Mario%20Bros&name_contains=Mario&console_name=NES&region=NTSC\", headers=headers, )\nres = conn.getresponse() \ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_price_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_price_output.json\")",
+        "peekOfCode": "headers = {\n    \"x-rapidapi-key\": \"47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6\",\n    \"x-rapidapi-host\": \"video-game-price.p.rapidapi.com\",\n}\nconn.request( \"GET\", \"/game?full_name=Super%20Mario%20Bros&name_contains=Mario&console_name=NES&region=NTSC\", headers=headers, )\nres = conn.getresponse() \ndata = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))",
         "detail": "Rapidapi-tests.video-game-price",
         "documentation": {}
     },
@@ -1362,7 +1496,7 @@
         "kind": 5,
         "importPath": "Rapidapi-tests.video-game-price",
         "description": "Rapidapi-tests.video-game-price",
-        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_price_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_price_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    print(\"Raw response:\", data.decode(\"utf-8\"))",
+        "peekOfCode": "data = res.read()\n# Decode the data, parse it as JSON, and save to a file\ntry:\n    json_data = json.loads(data.decode(\"utf-8\"))\n    with open(\"video_game_price_output.json\", \"w\", encoding=\"utf-8\") as f:\n        json.dump(json_data, f, indent=4)\n    print(\"Output saved to video_game_price_output.json\")\nexcept json.JSONDecodeError:\n    print(\"Failed to decode JSON response.\")\n    raw_response_str = data.decode(\"utf-8\", errors=\"replace\")",
         "detail": "Rapidapi-tests.video-game-price",
         "documentation": {}
     },

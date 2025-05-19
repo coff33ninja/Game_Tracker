@@ -1,9 +1,13 @@
 import http.client
 import json # Import the json module
+import sys # Import sys for sys.exit
 
 conn = http.client.HTTPSConnection("video-game-price.p.rapidapi.com") # Corrected hostname
 
-headers = { "x-rapidapi-key": "24cf6fe557msha7843d66020cd4fp14f0c0jsnb142b98926a9", "x-rapidapi-host": "video-game-price.p.rapidapi.com", }
+headers = {
+    "x-rapidapi-key": "47390d682cmsh4cd19bd83e78d56p1341d9jsn4f3d7d58a6b6",
+    "x-rapidapi-host": "video-game-price.p.rapidapi.com",
+}
 
 conn.request( "GET", "/game?full_name=Super%20Mario%20Bros&name_contains=Mario&console_name=NES&region=NTSC", headers=headers, )
 
@@ -18,4 +22,9 @@ try:
     print("Output saved to video_game_price_output.json")
 except json.JSONDecodeError:
     print("Failed to decode JSON response.")
-    print("Raw response:", data.decode("utf-8"))
+    raw_response_str = data.decode("utf-8", errors="replace")
+    # Ensure the string is printable on the current console by encoding and decoding with replacement
+    console_encoding = sys.stdout.encoding if sys.stdout.encoding else 'utf-8'
+    printable_response = raw_response_str.encode(console_encoding, errors='replace').decode(console_encoding)
+    print("Raw response:", printable_response)
+    sys.exit(1) # Exit with a non-zero status to indicate failure

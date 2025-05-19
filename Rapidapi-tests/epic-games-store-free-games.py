@@ -1,5 +1,6 @@
 import http.client
 import json 
+import sys # Import sys for sys.exit
 
 conn = http.client.HTTPSConnection("epic-games-store-free-games.p.rapidapi.com")
 
@@ -21,4 +22,5 @@ try:
     print("Output saved to epic_games_store_free_games_output.json")
 except json.JSONDecodeError:
     print("Failed to decode JSON response.")
-    print("Raw response:", data.decode("utf-8"))
+    print("Raw response:", data.decode("utf-8", errors="replace"))
+    sys.exit(1) # Exit with a non-zero status to indicate failure

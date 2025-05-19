@@ -1,5 +1,6 @@
 import http.client
 import json # Import the json module
+import sys # Import sys for sys.exit
 
 conn = http.client.HTTPSConnection("free-to-play-games-database.p.rapidapi.com")
 
@@ -18,4 +19,5 @@ try:
     print("Output saved to free_to_play_games_database_output.json")
 except json.JSONDecodeError:
     print("Failed to decode JSON response.")
-    print("Raw response:", data.decode("utf-8"))
+    print("Raw response:", data.decode("utf-8", errors="replace"))
+    sys.exit(1) # Exit with a non-zero status to indicate failure
