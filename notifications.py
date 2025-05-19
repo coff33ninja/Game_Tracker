@@ -16,9 +16,19 @@ class Notifications:
         max_len = 250  # Be a bit conservative
         if len(message) > max_len:
             message = message[:max_len] + "..."
-        notification.notify(
-            title=title, message=message, app_name="Free Games Arcade", timeout=10
-        )
+
+        # Safely get the notify method and check if it's callable
+        notify_method = getattr(notification, 'notify', None)
+        if callable(notify_method):
+            try:
+                notify_method(
+                    title=title, message=message, app_name="Free Games Arcade", timeout=10
+                )
+            except Exception as e:
+                # Catching generic Exception as plyer backends can raise various errors
+                print(f"Desktop notification failed: {e}")
+        else:
+            print("Desktop notification method (plyer.notification.notify) is not available or not callable.")
 
     def notify_new_games(self):
         games = self.db.get_games_by_status("active")
