@@ -71,38 +71,46 @@
     },
     {
         "label": "DistilBertTokenizer",
-        "importPath": "transformers",
-        "description": "transformers",
+        "importPath": "transformers.models.distilbert",
+        "description": "transformers.models.distilbert",
         "isExtraImport": true,
-        "detail": "transformers",
+        "detail": "transformers.models.distilbert",
         "documentation": {}
     },
     {
         "label": "DistilBertForSequenceClassification",
-        "importPath": "transformers",
-        "description": "transformers",
+        "importPath": "transformers.models.distilbert",
+        "description": "transformers.models.distilbert",
         "isExtraImport": true,
-        "detail": "transformers",
+        "detail": "transformers.models.distilbert",
         "documentation": {}
     },
     {
         "label": "pipeline",
-        "importPath": "transformers",
-        "description": "transformers",
+        "importPath": "transformers.pipelines",
+        "description": "transformers.pipelines",
         "isExtraImport": true,
-        "detail": "transformers",
+        "detail": "transformers.pipelines",
+        "documentation": {}
+    },
+    {
+        "label": "Trainer",
+        "importPath": "transformers.trainer",
+        "description": "transformers.trainer",
+        "isExtraImport": true,
+        "detail": "transformers.trainer",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingArguments",
+        "importPath": "transformers.training_args",
+        "description": "transformers.training_args",
+        "isExtraImport": true,
+        "detail": "transformers.training_args",
         "documentation": {}
     },
     {
         "label": "load_dataset",
-        "importPath": "datasets",
-        "description": "datasets",
-        "isExtraImport": true,
-        "detail": "datasets",
-        "documentation": {}
-    },
-    {
-        "label": "Dataset",
         "importPath": "datasets",
         "description": "datasets",
         "isExtraImport": true,
@@ -125,30 +133,6 @@
         "importPath": "os",
         "description": "os",
         "detail": "os",
-        "documentation": {}
-    },
-    {
-        "label": "DataLoader",
-        "importPath": "torch.utils.data",
-        "description": "torch.utils.data",
-        "isExtraImport": true,
-        "detail": "torch.utils.data",
-        "documentation": {}
-    },
-    {
-        "label": "AIModule",
-        "importPath": "ai_module",
-        "description": "ai_module",
-        "isExtraImport": true,
-        "detail": "ai_module",
-        "documentation": {}
-    },
-    {
-        "label": "AIModule",
-        "importPath": "ai_module",
-        "description": "ai_module",
-        "isExtraImport": true,
-        "detail": "ai_module",
         "documentation": {}
     },
     {
@@ -1387,7 +1371,7 @@
         "kind": 6,
         "importPath": "genre_tagging",
         "description": "genre_tagging",
-        "peekOfCode": "class GenreTagging:\n    def __init__(self, ai_module: AIModule, db_manager: DBManager):\n        self.ai = ai_module\n        self.db = db_manager\n    def tag_game(self, title, description):\n        # The AIModule's parse_text method no longer extracts genres.\n        # It's now focused on \"is_free\" classification and providing embeddings.\n        # Genre tagging would require a different approach:\n        # 1. A dedicated multi-label classification model trained on game descriptions and genres.\n        # 2. Keyword extraction from the description.",
+        "peekOfCode": "class GenreTagging:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    def tag_game(self, title, description):\n        # The AIModule's parse_text method no longer extracts genres.\n        # It's now focused on \"is_free\" classification and providing embeddings.\n        # Genre tagging would require a different approach:\n        # 1. A dedicated multi-label classification model trained on game descriptions and genres.\n        # 2. Keyword extraction from the description.\n        # 3. Using an external API that provides genre information.",
         "detail": "genre_tagging",
         "documentation": {}
     },
@@ -1432,7 +1416,7 @@
         "kind": 6,
         "importPath": "multi_language",
         "description": "multi_language",
-        "peekOfCode": "class MultiLanguage:\n    def __init__(self, ai_module: AIModule, db_manager: DBManager):\n        self.ai = ai_module\n        self.db = db_manager\n    async def scrape_non_english(self, url, platform, locale=\"de\"):\n        async with aiohttp.ClientSession() as session:\n            async with session.get(url, headers={\"Accept-Language\": locale}) as resp:\n                if resp.status != 200:\n                    print(f\"Failed to fetch non-English page {url}, status: {resp.status}\")\n                    return",
+        "peekOfCode": "class MultiLanguage:\n    def __init__(self, db_manager: DBManager):\n        self.db = db_manager\n    async def scrape_non_english(self, url, platform, locale=\"de\"):\n        async with aiohttp.ClientSession() as session:\n            async with session.get(url, headers={\"Accept-Language\": locale}) as resp:\n                if resp.status != 200:\n                    print(f\"Failed to fetch non-English page {url}, status: {resp.status}\")\n                    return\n                html = await resp.text()",
         "detail": "multi_language",
         "documentation": {}
     },

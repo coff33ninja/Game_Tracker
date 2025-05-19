@@ -1,13 +1,11 @@
 # multi_language.py
-from ai_module import AIModule
 from db_manager import DBManager
 import aiohttp
 from bs4 import BeautifulSoup # For HTML parsing
 
 
 class MultiLanguage:
-    def __init__(self, ai_module: AIModule, db_manager: DBManager):
-        self.ai = ai_module
+    def __init__(self, db_manager: DBManager):
         self.db = db_manager
 
     async def scrape_non_english(self, url, platform, locale="de"):
@@ -34,14 +32,14 @@ class MultiLanguage:
                     link_tag = element.select_one("a.game-link-class")   # Replace
 
                     if title_tag and link_tag and link_tag.has_attr('href'):
-                        original_title = title_tag.text.strip()
-                        game_url = link_tag['href']
-                        if not game_url.startswith("http"): # Make URL absolute if relative
+                        original_title = title_tag.text.strip() # type: ignore
+                        game_url = link_tag['href'] # type: ignore
+                        if not game_url.startswith("http"): # type: ignore # Make URL absolute if relative
                             base_url = "/".join(url.split("/")[:3]) # e.g., https://store.epicgames.com
-                            game_url = base_url + game_url
+                            game_url = base_url + game_url # type: ignore
 
                         print(f"Found non-English game: {original_title} at {game_url} ({locale})")
-                        # Note: Translation is a complex task. For now, we store the original title.
+                        # Note: Translation is a complex task. For now, we store the original title and URL.
                         # A dedicated translation model/API would be needed for actual translation.
                         self.db.add_game(
                             title=original_title, # Storing original title

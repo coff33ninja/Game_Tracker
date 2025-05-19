@@ -1,14 +1,11 @@
 # ai_module.py
-from transformers import (
-    DistilBertTokenizer,
-    DistilBertForSequenceClassification,
-    pipeline,
-)
-from datasets import load_dataset, Dataset # Dataset might be useful for programmatic creation
+from transformers.models.distilbert import DistilBertTokenizer, DistilBertForSequenceClassification
+from transformers.pipelines import pipeline
+from transformers.trainer import Trainer
+from transformers.training_args import TrainingArguments
+from datasets import load_dataset # Dataset class itself is not directly used here
 import torch
 import os
-import json
-from torch.utils.data import DataLoader # For custom batching if needed, though Trainer handles it
 
 
 class AIModule:
@@ -25,7 +22,7 @@ class AIModule:
             self.model = DistilBertForSequenceClassification.from_pretrained(model_path)
             print(f"Loaded fine-tuned model from {model_path}")
         else:
-            print(f"Initializing new model from distilbert-base-uncased for sequence classification (2 labels).")
+            print("Initializing new model from distilbert-base-uncased for sequence classification (2 labels).")
             # Initialize for binary classification (e.g., FREE vs NOT_FREE)
             self.model = DistilBertForSequenceClassification.from_pretrained(
                 "distilbert-base-uncased",
@@ -33,7 +30,7 @@ class AIModule:
                 id2label={0: "NOT_FREE", 1: "FREE"}, # Makes pipeline output more readable
                 label2id={"NOT_FREE": 0, "FREE": 1}
             )
-        self.model.to(self.device)
+        self.model.to(self.device) # type: ignore
 
         # Use integer for pipeline device: -1 for CPU, 0, 1, ... for GPU
         pipeline_device = self.device.index if self.device.type == "cuda" else -1
@@ -62,11 +59,9 @@ class AIModule:
         # Apply preprocessing
         # remove_columns is important to drop the original 'text' and 'labels' (dict) columns
         dataset = dataset.map(preprocess_function, batched=True, remove_columns=["text", "labels"])
-        dataset.set_format("torch", columns=["input_ids", "attention_mask", "label"]) # 'label' is now the target
+        dataset.set_format("torch", columns=["input_ids", "attention_mask", "label"]) # type: ignore # 'label' is now the target
 
         # Training arguments
-        from transformers import Trainer, TrainingArguments
-
         training_args = TrainingArguments(
             output_dir="./results",
             num_train_epochs=3,
@@ -81,8 +76,8 @@ class AIModule:
         trainer = Trainer(
             model=self.model,
             args=training_args,
-            train_dataset=dataset["train"],
-            eval_dataset=dataset.get("validation") or dataset.get("test"), # Use test if validation is not present
+            train_dataset=dataset["train"], # type: ignore
+            eval_dataset=dataset.get("validation") or dataset.get("test"), # type: ignore # Use test if validation is not present
         )
         trainer.train()
         self.model.save_pretrained("distilbert-free-games")

@@ -1,12 +1,9 @@
 # genre_tagging.py
-from ai_module import AIModule
 from db_manager import DBManager
 import sqlite3 # Import for database operations
 
-
 class GenreTagging:
-    def __init__(self, ai_module: AIModule, db_manager: DBManager):
-        self.ai = ai_module
+    def __init__(self, db_manager: DBManager):
         self.db = db_manager
 
     def tag_game(self, title, description):
@@ -17,18 +14,29 @@ class GenreTagging:
         # 2. Keyword extraction from the description.
         # 3. Using an external API that provides genre information.
         # For now, this function will be a placeholder and not update genres via AI.
-        # Genres might be populated by scrapers if they can find that info, or manually.
+        # We will implement a simple keyword-based approach.
 
-        print(f"GenreTagging.tag_game called for '{title}'. AI-based genre extraction is currently not implemented with this AIModule.")
-        # Example: If you had a keyword-based approach:
-        # found_genres = []
-        # if "rpg" in description.lower(): found_genres.append("RPG")
-        # if "shooter" in description.lower(): found_genres.append("Shooter")
-        # genre_str = ",".join(found_genres)
-        # if genre_str:
-        #     conn = sqlite3.connect(self.db.db_path)
-        #     conn.execute("UPDATE games SET genre = ? WHERE title = ?", (genre_str, title))
-        #     conn.commit()
-        #     conn.close()
-        # return genre_str
-        return "" # Return empty string or None as genres are not being tagged by this method now.
+        found_genres = []
+        if not description: # Handle cases where description might be None or empty
+            print(f"No description provided for '{title}', cannot tag genres.")
+            return ""
+
+        description_lower = description.lower()
+
+        # Simple keyword matching for genres
+        if "rpg" in description_lower or "role-playing" in description_lower: found_genres.append("RPG")
+        if "shooter" in description_lower: found_genres.append("Shooter")
+        if "adventure" in description_lower: found_genres.append("Adventure")
+        if "strategy" in description_lower: found_genres.append("Strategy")
+        if "puzzle" in description_lower: found_genres.append("Puzzle")
+        if "action" in description_lower: found_genres.append("Action")
+        if "simulation" in description_lower: found_genres.append("Simulation")
+
+        genre_str = ",".join(list(set(found_genres))) # Use set to avoid duplicate genres
+        if genre_str:
+            conn = sqlite3.connect(self.db.db_path)
+            conn.execute("UPDATE games SET genre = ? WHERE title = ?", (genre_str, title))
+            conn.commit()
+            conn.close()
+            print(f"Tagged '{title}' with genres: {genre_str}")
+        return genre_str

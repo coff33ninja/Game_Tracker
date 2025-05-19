@@ -44,10 +44,10 @@ if __name__ == "__main__":
     notifications = Notifications(db) # Email config removed
     library_import = LibraryImport(db)
     price_tracker = PriceTracker(db)
-    ai_recommendations = AIRecommendations(ai, db)
+    ai_recommendations = AIRecommendations(ai_module=ai, db_manager=db) # Use keyword arguments for clarity
     export_backup = ExportBackup(db)
-    genre_tagging = GenreTagging(ai, db)
-    multi_language = MultiLanguage(ai, db)
+    genre_tagging = GenreTagging(db) # AIModule dependency removed
+    multi_language = MultiLanguage(db) # AIModule dependency removed
     analytics = Analytics(db)
 
     # --- Cloud Sync Configuration ---
