@@ -1,0 +1,14 @@
+# Virtual environment
+.venv/
+
+# VS Code
+.vscode/
+
+# Database files
+*.db
+
+# JSON files
+*.json
+
+# JSON Lines files
+*.jsonl
